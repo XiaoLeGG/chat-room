@@ -1,4 +1,4 @@
-package cn.edu.sustech.cs209.packet;
+package cn.edu.sustech.cs209.chatclient.packet;
 
 public enum PacketType {
 	LOGIN, REGISTER;

@@ -1,14 +1,12 @@
-package cn.edu.sustech.cs209.model;
+package cn.edu.sustech.cs209.chatclient.model;
 
-import cn.edu.sustech.cs209.net.ChatServer;
+import cn.edu.sustech.cs209.chatclient.net.ChatServer;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;

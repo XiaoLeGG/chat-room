@@ -1,18 +1,14 @@
-package cn.edu.sustech.cs209.net;
+package cn.edu.sustech.cs209.chatclient.net;
 
-import cn.edu.sustech.cs209.model.User;
-import cn.edu.sustech.cs209.model.UserManager;
-import cn.edu.sustech.cs209.packet.Packet;
-import cn.edu.sustech.cs209.packet.PacketIO;
-import cn.edu.sustech.cs209.packet.PacketType;
-import cn.edu.sustech.cs209.packet.PacketWrapper;
+import cn.edu.sustech.cs209.chatclient.model.User;
+import cn.edu.sustech.cs209.chatclient.packet.PacketIO;
+import cn.edu.sustech.cs209.chatclient.packet.Packet;
+import cn.edu.sustech.cs209.chatclient.packet.PacketType;
+import cn.edu.sustech.cs209.chatclient.packet.PacketWrapper;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.Socket;
 
 public class UserThread extends Thread {

@@ -1,7 +1,7 @@
-package cn.edu.sustech.cs209;
+package cn.edu.sustech.cs209.chatclient;
 
-import cn.edu.sustech.cs209.net.ChatServer;
-import cn.edu.sustech.cs209.packet.NetConfig;
+import cn.edu.sustech.cs209.chatclient.net.ChatServer;
+import cn.edu.sustech.cs209.chatclient.packet.NetConfig;
 
 public class Main {
 	

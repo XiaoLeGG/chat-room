@@ -1,0 +1,38 @@
+.main-background {
+    -fx-background-color: #DADADA;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-pref-height: 768;
+    -fx-pref-width: 1200;
+}
+
+.chat-block {
+    -fx-background-color: #F4F6F8;
+    -fx-background-radius: 10px;
+    -fx-pref-height: 650;
+    -fx-max-height: 650;
+    -fx-pref-width: 700;
+    -fx-max-width: 700;
+}
+
+.split-pane > .split-pane-divider {
+    -fx-background-color: transparent;
+    -fx-border-color: rgb(0, 0, 0, 0.2);
+    -fx-border-width: 0 1 1 0;
+    -fx-border-insets: 0;
+    -fx-padding: 0;
+}
+
+.chat-list-block {
+    -fx-background-color: #F4F6F8;
+    -fx-background-radius: 10px;
+    -fx-pref-height: 490;
+    -fx-pref-width: 250;
+}
+
+.profile-block {
+    -fx-background-color: #F4F6F8;
+    -fx-background-radius: 10px;
+    -fx-pref-height: 120;
+    -fx-pref-width: 250;
+}

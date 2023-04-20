@@ -1,4 +1,4 @@
-package cn.edu.sustech.cs209;
+package cn.edu.sustech.cs209.chatclient;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

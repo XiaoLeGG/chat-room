@@ -5,6 +5,8 @@
     <file url="file://$PROJECT_DIR$/chat-client/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/chat-common/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/chat-common/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/chat-room/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/chat-room/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/chat-server/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/chat-server/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />

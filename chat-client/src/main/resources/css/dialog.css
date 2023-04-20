@@ -1,0 +1,45 @@
+.jfx-layout-heading .warning-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: BOLD;
+    -fx-font-style: italic;
+    -fx-text-fill: YELLOW;
+    -fx-alignment: CENTER;
+}
+
+.jfx-layout-heading .info-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: BOLD;
+    -fx-font-style: italic;
+    -fx-text-fill: SKYBLUE;
+    -fx-alignment: CENTER;
+}
+
+.jfx-layout-heading .error-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: BOLD;
+    -fx-font-style: italic;
+    -fx-text-fill: RED;
+    -fx-alignment: CENTER;
+}
+
+.jfx-layout-body .text {
+    -fx-font-size: 16px;
+    -fx-font-weight: 600;
+    -fx-font-style: normal;
+    -fx-text-fill: BLACK;
+    -fx-alignment: CENTER;
+}
+
+.jfx-layout-actions .jfx-button {
+    -fx-background-color: SKYBLUE;
+    -fx-font-style: italic;
+    -fx-text-fill: WHITE;
+    -fx-padding: 0.2em 0.4em;
+    -fx-font-size: 16px;
+    -fx-font-weight: BOLD;
+    -jfx-button-type: FLAT;
+}
+
+.jfx-layout-actions .jfx-button:hover {
+    -fx-background-color: rgb(140, 170, 255, 1);
+}

@@ -1,4 +1,4 @@
-package cn.edu.sustech.cs209.model;
+package cn.edu.sustech.cs209.chatclient.model;
 
 import java.net.Socket;
 

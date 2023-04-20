@@ -1,4 +1,4 @@
-package cn.edu.sustech.cs209.packet;
+package cn.edu.sustech.cs209.chatclient.packet;
 
 public class NetConfig {
 	public final static int SERVER_PORT = 25555;
