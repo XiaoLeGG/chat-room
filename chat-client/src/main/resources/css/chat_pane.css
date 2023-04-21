@@ -36,3 +36,41 @@
     -fx-pref-height: 120;
     -fx-pref-width: 250;
 }
+
+.chat-background {
+    -fx-background-color: #F4F6F8;
+}
+
+.type-area {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-pref-width: 650;
+    -fx-pref-height: 150;
+    -fx-font-size: 16px;
+}
+
+.type-area .content {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-witth: 0;
+}
+
+.send-button {
+    -jfx-button-type: FLAT;
+    -fx-text-fill: #06C179;
+    -fx-background-color: #E9E9E9;
+    -fx-background-radius: 3;
+    -fx-pref-height: 18;
+    -fx-pref-width: 120;
+    -fx-font-size: 16px;
+}
+
+.chat-room-title {
+    -fx-font-size: 24px;
+}
+
+.send-button:hover {
+    -fx-background-color: #D2D2D2;
+    -fx-text-fill: #06AE57;
+}

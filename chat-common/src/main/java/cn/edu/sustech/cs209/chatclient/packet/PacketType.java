@@ -1,6 +1,6 @@
 package cn.edu.sustech.cs209.chatclient.packet;
 
 public enum PacketType {
-	LOGIN, REGISTER;
+	LOGIN, REGISTER, USER;
 	private PacketType() {}
 }

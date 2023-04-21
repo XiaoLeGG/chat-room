@@ -49,6 +49,7 @@ public class LoginController {
 			}
 			this.chatController = new ChatController(this, connector);
 			this.chatController.showChatPane();
+			this.chatController.startClientThread();
 			return "登录成功";
 		} else {
 			return "连接到服务器失败";

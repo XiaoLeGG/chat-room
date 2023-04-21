@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,14 +17,14 @@ public class UserManager {
 	private final ChatServer server;
 	
 	private Map<String, Socket> onlineUsers;
-	private Map<String, User> profiles;
+	private Map<String, User> users;
 
 	public User createUser(String username, String password) {
-		if (profiles.containsKey(username.toLowerCase())) {
-			return new User(null, null);
+		if (users.containsKey(username.toLowerCase())) {
+			return new User(null, null, null);
 		}
-		User user = new User(username, password);
-		profiles.put(username.toLowerCase(), user);
+		User user = new User(username, password, new UserPI(username));
+		users.put(username.toLowerCase(), user);
 		File file = new File("users" + File.separator + username.toLowerCase() + ".json");
 		try {
 			if (!file.createNewFile()) {
@@ -44,7 +45,7 @@ public class UserManager {
 	}
 	
 	public User loginUser(String username, String password, Socket socket) {
-		User user = profiles.get(username.toLowerCase());
+		User user = users.get(username.toLowerCase());
 		if (user != null && user.getPassword().equals(password)) {
 			onlineUsers.put(username.toLowerCase(), socket);
 			return user;
@@ -52,10 +53,14 @@ public class UserManager {
 		return null;
 	}
 	
+	public Collection<UserPI> getUserPIs() {
+		return users.values().stream().map(User::getUserPI).toList();
+	}
+	
 	public UserManager(ChatServer server) {
 		this.server = server;
 		
-		this.profiles = new HashMap<>();
+		this.users = new HashMap<>();
 		this.onlineUsers = new HashMap<>();
 		
 		File dir = new File("users");
@@ -70,7 +75,7 @@ public class UserManager {
 			try {
 				BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
 				User user = JSON.parseObject(new String(bufferedInputStream.readAllBytes(), StandardCharsets.UTF_8), User.class);
-				profiles.put(user.getUserName().toLowerCase(), user);
+				users.put(user.getUserName().toLowerCase(), user);
 				server.info("Loaded user profile: " + user.getUserName());
 			} catch (Exception e) {
 				server.warning("Failed to load user profile: " + file.getName());
