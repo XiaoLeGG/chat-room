@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 public class ChatInformation {
 	
 	private ChatInformationType type;
-	private UserPI sender;
+	private String sender;
 	private JSONObject content;
 	private long timestamp;
 	
@@ -14,7 +14,7 @@ public class ChatInformation {
 		return type;
 	}
 	
-	public UserPI getSender() {
+	public String getSender() {
 		return sender;
 	}
 	
@@ -26,7 +26,7 @@ public class ChatInformation {
 		return timestamp;
 	}
 	
-	public ChatInformation(ChatInformationType type, UserPI sender, JSONObject content, long timestamp) {
+	public ChatInformation(ChatInformationType type, String sender, JSONObject content, long timestamp) {
 		this.type = type;
 		this.sender = sender;
 		this.content = content;

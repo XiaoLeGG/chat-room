@@ -28,7 +28,7 @@ public class MessageBox extends HBox {
 		this.getStyleClass().add("message-box");
 		VBox vbox = new VBox();
 		vbox.setSpacing(10);
-		Label senderName = new Label(this.content.getSender().getName());
+		Label senderName = new Label(this.content.getSender());
 		senderName.getStyleClass().add("name-label");
 		vbox.getChildren().add(senderName);
 		if (this.content.getType() == ChatInformationType.MESSAGE) {

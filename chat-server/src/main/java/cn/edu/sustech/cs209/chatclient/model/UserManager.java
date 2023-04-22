@@ -1,6 +1,7 @@
 package cn.edu.sustech.cs209.chatclient.model;
 
 import cn.edu.sustech.cs209.chatclient.net.ChatServer;
+import cn.edu.sustech.cs209.chatclient.net.UserThread;
 import com.alibaba.fastjson.JSON;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -12,13 +13,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class UserManager {
+	
 	private final ChatServer server;
 	
-	private Map<String, Socket> onlineUsers;
+	private Map<String, UserThread> onlineUsers;
 	private Map<String, User> users;
-
+	
 	public User createUser(String username, String password) {
 		if (users.containsKey(username.toLowerCase())) {
 			return new User(null, null, null);
@@ -44,10 +47,10 @@ public class UserManager {
 		return user;
 	}
 	
-	public User loginUser(String username, String password, Socket socket) {
+	public User loginUser(String username, String password, UserThread thread) {
 		User user = users.get(username.toLowerCase());
 		if (user != null && user.getPassword().equals(password)) {
-			onlineUsers.put(username.toLowerCase(), socket);
+			onlineUsers.put(username.toLowerCase(), thread);
 			return user;
 		}
 		return null;
@@ -57,12 +60,41 @@ public class UserManager {
 		return users.values().stream().map(User::getUserPI).toList();
 	}
 	
-	public UserManager(ChatServer server) {
-		this.server = server;
-		
-		this.users = new HashMap<>();
-		this.onlineUsers = new HashMap<>();
-		
+	public User getUser(String username) {
+		return users.get(username.toLowerCase());
+	}
+	
+	public Collection<String> getOnlineUserPIs() {
+		return onlineUsers.keySet().stream().map(e -> getUser(e).getUserName()).toList();
+	}
+	
+	public UserThread getOnlineUserThread(String username) {
+		return onlineUsers.get(username.toLowerCase());
+	}
+	
+	public Collection<UserThread> getOnlineUserThreads() {
+		return onlineUsers.values();
+	}
+	
+	synchronized public boolean logoutUser(String username) {
+		UserThread thread = onlineUsers.get(username.toLowerCase());
+		if (thread != null) {
+			if (!thread.isClosed()) {
+				try {
+					thread.closeSocket();
+				} catch (Exception e) {
+					if (this.server.debug()) {
+						e.printStackTrace();
+					}
+				}
+			}
+			onlineUsers.remove(username.toLowerCase());
+			return true;
+		}
+		return false;
+	}
+	
+	public void init() {
 		File dir = new File("users");
 		if (!dir.exists()) {
 			if (!dir.mkdir()) {
@@ -73,8 +105,11 @@ public class UserManager {
 		
 		for (File file : dir.listFiles(e -> e.getName().toLowerCase().endsWith(".json"))) {
 			try {
-				BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
-				User user = JSON.parseObject(new String(bufferedInputStream.readAllBytes(), StandardCharsets.UTF_8), User.class);
+				BufferedInputStream bufferedInputStream = new BufferedInputStream(
+					new FileInputStream(file));
+				User user = JSON.parseObject(
+					new String(bufferedInputStream.readAllBytes(), StandardCharsets.UTF_8),
+					User.class);
 				users.put(user.getUserName().toLowerCase(), user);
 				server.info("Loaded user profile: " + user.getUserName());
 			} catch (Exception e) {
@@ -82,7 +117,16 @@ public class UserManager {
 			}
 			
 		}
+	}
+	
+	
+	public UserManager(ChatServer server) {
+		this.server = server;
+		
+		this.users = new ConcurrentHashMap<>();
+		this.onlineUsers = new ConcurrentHashMap<>();
+		
 		
 	}
-
+	
 }

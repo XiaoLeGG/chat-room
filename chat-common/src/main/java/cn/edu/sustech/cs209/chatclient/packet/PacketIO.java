@@ -10,16 +10,14 @@ import java.io.OutputStreamWriter;
 
 public class PacketIO {
 	
-	public static void sendPacket(OutputStream output, Packet packet) throws IOException {
-		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output, "UTF-8"));
+	synchronized public static void sendPacket(BufferedWriter writer, Packet packet) throws IOException {
 		String json = PacketWrapper.wrapToString(packet);
 		writer.write(json.length());
 		writer.write(json);
 		writer.flush();
 	}
 	
-	public static Packet receivePacket(InputStream input) throws IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(input, "UTF-8"));
+	synchronized public static Packet receivePacket(BufferedReader reader) throws IOException {
 		int charLenght = reader.read();
 		char[] read = new char[charLenght];
 		reader.read(read);

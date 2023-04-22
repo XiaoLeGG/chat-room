@@ -42,7 +42,7 @@ public class ChatSplitPane extends SplitPane {
 		HBox chatHeader = new HBox();
 		String title = this.room.getName();
 		if (this.room.getType() == RoomType.PRIVATE) {
-			title = this.room.getUsers()[0].equals(this.currentUser.getName()) ? this.room.getUsers()[1].getName() : this.room.getUsers()[0].getName();
+			title = this.room.getUsers()[0].equals(this.currentUser.getName()) ? this.room.getUsers()[1] : this.room.getUsers()[0];
 		}
 		Label titleLabel = new Label(title);
 		titleLabel.getStyleClass().add("chat-room-title");
@@ -58,7 +58,7 @@ public class ChatSplitPane extends SplitPane {
 		if (this.getRoom().getType() != RoomType.EMPTY) {
 			this.history.stream().forEach((component) -> {
 				MessageBox box = new MessageBox(component,
-					component.getSender().getName().equals(this.currentUser.getName()));
+					component.getSender().equals(this.currentUser.getName()));
 				chatComponentBox.getChildren().add(box);
 			});
 		}
@@ -86,7 +86,7 @@ public class ChatSplitPane extends SplitPane {
 		if (this.getRoom().getType() == RoomType.EMPTY) {
 			return;
 		}
-		MessageBox box = new MessageBox(information, information.getSender().getName().equals(this.currentUser.getName()));
+		MessageBox box = new MessageBox(information, information.getSender().equals(this.currentUser.getName()));
 		this.chatComponentBox.getChildren().add(box);
 	}
 	

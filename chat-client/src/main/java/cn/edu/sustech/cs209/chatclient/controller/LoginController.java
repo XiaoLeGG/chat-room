@@ -1,8 +1,10 @@
 package cn.edu.sustech.cs209.chatclient.controller;
 
+import cn.edu.sustech.cs209.chatclient.model.User;
 import cn.edu.sustech.cs209.chatclient.net.ClientConnector;
 import cn.edu.sustech.cs209.chatclient.view.LoginPane;
 import cn.edu.sustech.cs209.chatclient.packet.Packet;
+import com.alibaba.fastjson.JSON;
 import javafx.stage.Stage;
 
 public class LoginController {
@@ -47,7 +49,7 @@ public class LoginController {
 			if (packet.getSubCode() == 0) {
 				return "登录失败，请检查用户名和密码";
 			}
-			this.chatController = new ChatController(this, connector);
+			this.chatController = new ChatController(this, connector, JSON.parseObject(packet.getContent().toJSONString(), User.class));
 			this.chatController.showChatPane();
 			this.chatController.startClientThread();
 			return "登录成功";

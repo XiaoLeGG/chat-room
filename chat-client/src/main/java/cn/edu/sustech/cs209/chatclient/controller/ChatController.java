@@ -19,12 +19,14 @@ public class ChatController {
 	private LoginController loginController;
 	private User user;
 	private List<UserPI> userPIs;
+	private List<String> onlineUsers;
 	private ChatPane pane;
 	private ClientConnector connector;
 	private ClientThread thread;
-	public ChatController(LoginController loginController, ClientConnector connector) {
+	public ChatController(LoginController loginController, ClientConnector connector, User user) {
 		this.loginController = loginController;
 		this.connector = connector;
+		this.user = user;
 	}
 	
 	protected void startClientThread() {
@@ -46,7 +48,18 @@ public class ChatController {
 					this.userPIs.add(userPI);
 				}
 			}
+			if (packet.getSubCode() == 1) {
+				JSONArray array = packet.getContent().getJSONArray("online");
+				String[] users = new String[array.size()];
+				array.toArray(users);
+				onlineUsers = new ArrayList<>();
+				onlineUsers.addAll(Arrays.asList(users));
+			}
 		}
+	}
+	
+	public boolean isOnline(String userName) {
+		return this.onlineUsers.contains(userName);
 	}
 	
 	public User getUser() {

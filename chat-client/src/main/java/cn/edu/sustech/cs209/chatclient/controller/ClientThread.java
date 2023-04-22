@@ -18,6 +18,7 @@ public class ClientThread extends Thread {
 	public void run() {
 		try {
 			while (true) {
+				System.out.println("yes");
 				Packet packet = this.connector.accpetPacket();
 				if (packet != null) {
 					this.controller.handlePacket(packet);

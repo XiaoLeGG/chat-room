@@ -1,6 +1,8 @@
 package cn.edu.sustech.cs209.chatclient.net;
 
+import cn.edu.sustech.cs209.chatclient.model.ChatRoomManager;
 import cn.edu.sustech.cs209.chatclient.model.UserManager;
+import cn.edu.sustech.cs209.chatclient.packet.Packet;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -16,11 +18,15 @@ public class ChatServer {
 	private ExecutorService threadPool;
 	private StringBuilder log;
 	private UserManager manager;
+	private ChatRoomManager roomManager;
 	public ChatServer() {}
 	
 	public void initServer(String host, int port) throws IOException {
 		log = new StringBuilder();
-		manager = new UserManager(this);
+		this.manager = new UserManager(this);
+		this.manager.init();
+		this.roomManager = new ChatRoomManager(this);
+		this.roomManager.init();
 		serverSocket = new ServerSocket();
 		serverSocket.bind(new InetSocketAddress(host, port));
 		serverSocket.setSoTimeout(7 * 24 * 60 * 60 * 1000);
@@ -42,6 +48,22 @@ public class ChatServer {
 	
 	public UserManager getUserManager() {
 		return manager;
+	}
+	public ChatRoomManager getChatRoomManager() {
+		return roomManager;
+	}
+	
+	public void broadcastPacket(Packet packet) {
+		this.manager.getOnlineUserThreads().stream().forEach((thread) -> {
+			try {
+				thread.sendPacket(packet);
+			} catch (IOException e) {
+				if (this.debug()) {
+					e.printStackTrace();
+				}
+				this.error("Failed to send packet to " + thread.getUser().getUserName());
+			}
+		});
 	}
 	
 	public void log(String msg) {

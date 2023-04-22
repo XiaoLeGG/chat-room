@@ -5,7 +5,7 @@ public class ChatRoom {
 	private String name;
 	private int roomID;
 	private RoomType type;
-	private UserPI[] users;
+	private String[] users;
 	
 	public String getName() {
 		return name;
@@ -19,11 +19,11 @@ public class ChatRoom {
 		return type;
 	}
 	
-	public UserPI[] getUsers() {
+	public String[] getUsers() {
 		return users;
 	}
 	
-	public ChatRoom(String name, int roomID, RoomType type, UserPI ...users) {
+	public ChatRoom(String name, int roomID, RoomType type, String ...users) {
 		this.name = name;
 		this.roomID = roomID;
 		this.type = type;

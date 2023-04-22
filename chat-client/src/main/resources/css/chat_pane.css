@@ -74,3 +74,31 @@
     -fx-background-color: #D2D2D2;
     -fx-text-fill: #06AE57;
 }
+
+.user-name-label {
+    -fx-font-size: 16px;
+}
+
+.chat-room-list-view {
+    -fx-background-color: transparent;
+}
+
+.new-chat-button {
+    -jfx-button-type: FLAT;
+    -fx-text-fill: #06C179;
+    -fx-background-color: #E9E9E9;
+    -fx-background-radius: 3;
+    -fx-pref-height: 18;
+    -fx-pref-width: 120;
+    -fx-font-size: 16px;
+}
+
+.new-chat-button:hover {
+    -fx-background-color: #D2D2D2;
+    -fx-text-fill: #06AE57;
+}
+
+.new-chat-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: BOLD;
+}
