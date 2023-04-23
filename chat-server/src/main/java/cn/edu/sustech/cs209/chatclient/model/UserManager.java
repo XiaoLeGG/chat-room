@@ -72,6 +72,23 @@ public class UserManager {
 		return onlineUsers.get(username.toLowerCase());
 	}
 	
+	public void saveUser(User user) {
+		File file = new File("users" + File.separator + user.getUserName().toLowerCase() + ".json");
+		try {
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file));
+			out.write(JSON.toJSONString(user).getBytes(StandardCharsets.UTF_8));
+			out.flush();
+			out.close();
+		} catch (Exception e) {
+			if (this.server.debug()) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	public Collection<UserThread> getOnlineUserThreads() {
 		return onlineUsers.values();
 	}

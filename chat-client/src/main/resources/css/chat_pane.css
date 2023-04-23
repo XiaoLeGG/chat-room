@@ -42,7 +42,7 @@
 }
 
 .type-area {
-    -fx-background-color: transparent;
+    -fx-background-color: #F4F6F8;
     -fx-border-color: transparent;
     -fx-border-width: 0;
     -fx-pref-width: 650;
@@ -51,7 +51,7 @@
 }
 
 .type-area .content {
-    -fx-background-color: transparent;
+    -fx-background-color: #F4F6F8;
     -fx-border-color: transparent;
     -fx-border-witth: 0;
 }
@@ -79,10 +79,6 @@
     -fx-font-size: 16px;
 }
 
-.chat-room-list-view {
-    -fx-background-color: transparent;
-}
-
 .new-chat-button {
     -jfx-button-type: FLAT;
     -fx-text-fill: #06C179;
@@ -101,4 +97,72 @@
 .new-chat-title {
     -fx-font-size: 20px;
     -fx-font-weight: BOLD;
+}
+
+.user-list-view {
+    -fx-background-color: transparent;
+    -fx-border-color: BLACK;
+    -fx-border-width: 2;
+}
+
+.user-list-view-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.user-list-view .list-cell:odd {
+    -fx-background-color: #F4F6F8;
+}
+
+.user-list-view .list-cell:even {
+    -fx-background-color: WHITE;
+}
+
+.tag-label {
+    -fx-font-weight: BOLD;
+    -fx-font-size: 16;
+}
+
+.create-button {
+    -jfx-button-type: FLAT;
+    -fx-text-fill: #06C179;
+    -fx-background-color: #E9E9E9;
+    -fx-background-radius: 3;
+    -fx-pref-height: 18;
+    -fx-pref-width: 120;
+    -fx-font-size: 16px;
+}
+
+.create-button:hover {
+    -fx-background-color: #D2D2D2;
+    -fx-text-fill: #06AE57;
+}
+
+.chat-room-list-view-label  {
+    -fx-font-weight: BOLD;
+    -fx-font-size: 20px;
+    -fx-text-fill: BLACK;
+}
+
+.chat-room-list-view {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+
+.chat-room-list-cell-empty {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+
+.chat-room-list-cell {
+    -fx-background-color: #E2E2E2;
+}
+
+.chat-room-list-cell:hover {
+    -fx-background-color: #D2D2D2;
+}
+
+.chat-room-list-cell:selected {
+    -fx-background-color: #D0D0D0;
 }

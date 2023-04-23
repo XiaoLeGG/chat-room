@@ -55,7 +55,7 @@ public class ViewUtils {
 		dialog.show(pane);
 	}
 	
-	public static void showInfomation(StackPane pane, TextFlow flow) {
+	public static void showInformation(StackPane pane, TextFlow flow) {
 		JFXDialog dialog = new JFXDialog();
 		dialog.getStylesheets().add(ViewUtils.class.getResource("/css/dialog.css").toExternalForm());
 		dialog.setTransitionType(DialogTransition.CENTER);

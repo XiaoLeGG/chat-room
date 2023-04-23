@@ -30,6 +30,15 @@ public class ChatRoom {
 		this.users = users;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof ChatRoom) {
+			ChatRoom room = (ChatRoom) obj;
+			return room.roomID == this.roomID;
+		}
+		return false;
+	}
+	
 	public enum RoomType {
 		PRIVATE, GROUP, EMPTY;
 	}

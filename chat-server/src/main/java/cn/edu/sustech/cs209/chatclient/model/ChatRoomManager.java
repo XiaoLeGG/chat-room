@@ -32,6 +32,29 @@ public class ChatRoomManager {
 		return histories.get(id);
 	}
 	
+	public void saveChatRoom(int id) {
+		ChatRoom room = rooms.get(id);
+		ChatRoomHistory history = histories.get(id);
+		File file = new File("chatrooms" + File.separator + id + ".json");
+		JSONObject object = new JSONObject();
+		object.put("room", JSON.toJSON(room));
+		object.put("history", JSON.toJSON(history));
+		try {
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			byte[] bytes = object.toJSONString().getBytes(StandardCharsets.UTF_8);
+			FileOutputStream output = new FileOutputStream(file);
+			output.write(bytes);
+			output.flush();
+			output.close();
+		} catch (Exception e) {
+			if (this.server.debug()) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	public Collection<ChatRoom> getChatRooms() {
 		return rooms.values();
 	}

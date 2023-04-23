@@ -11,6 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import com.jfoenix.controls.JFXButton;
 
@@ -22,6 +23,10 @@ public class LoginPane {
 	private Pane loginPane;
 	private Pane registerPane;
 	private LoginController controller;
+	
+	public void showError(TextFlow flow) {
+		ViewUtils.showError(this.stackPane, flow);
+	}
 	
 	public LoginPane(LoginController controller) {
 		this.controller = controller;
@@ -168,7 +173,7 @@ public class LoginPane {
 				String msg = this.controller.register(textField.getText(), passwordField.getText());
 				if (msg.equals("注册成功")) {
 					this.initLogin();
-					ViewUtils.showInfomation((StackPane) this.loginPane, ViewUtils.generateTextFlow(msg));
+					ViewUtils.showInformation((StackPane) this.loginPane, ViewUtils.generateTextFlow(msg));
 				} else {
 					ViewUtils.showWarning(pane, ViewUtils.generateTextFlow(msg));
 				}

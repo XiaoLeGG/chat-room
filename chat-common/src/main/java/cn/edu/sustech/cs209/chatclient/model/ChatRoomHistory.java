@@ -12,6 +12,10 @@ public class ChatRoomHistory {
 		this.informationList.sort((a, b) -> (int) (a.getTimestamp() - b.getTimestamp()));
 	}
 	
+	public List<ChatInformation> getInformationList() {
+		return this.informationList;
+	}
+	
 	public void append(ChatInformation information) {
 		this.informationList.add(information);
 	}

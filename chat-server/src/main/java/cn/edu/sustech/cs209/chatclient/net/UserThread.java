@@ -1,6 +1,7 @@
 package cn.edu.sustech.cs209.chatclient.net;
 
 import cn.edu.sustech.cs209.chatclient.model.ChatInformation;
+import cn.edu.sustech.cs209.chatclient.model.ChatInformation.ChatInformationType;
 import cn.edu.sustech.cs209.chatclient.model.ChatRoom;
 import cn.edu.sustech.cs209.chatclient.model.ChatRoom.RoomType;
 import cn.edu.sustech.cs209.chatclient.model.ChatRoomHistory;
@@ -21,6 +22,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 public class UserThread extends Thread {
 	
@@ -71,6 +75,21 @@ public class UserThread extends Thread {
 				}
 				String username = content.getString("username");
 				String password = content.getString("password");
+				if (this.server.getUserManager().getOnlineUserThread(username) != null) {
+					try {
+						UserThread thread = this.server.getUserManager()
+							.getOnlineUserThread(username);
+						thread.sendPacket(
+							new Packet(PacketType.USER, "server", 0, 2, new JSONObject()));
+						thread.closeSocket();
+					} catch (Exception e) {
+						if (this.server.debug()) {
+							e.printStackTrace();
+						}
+					} finally {
+						Thread.sleep(50);
+					}
+				}
 				this.user = this.server.getUserManager().loginUser(username, password, this);
 				if (user == null) {
 					PacketIO.sendPacket(this.writer, new Packet(PacketType.LOGIN, "server", 0, 0, new JSONObject()));
@@ -80,6 +99,30 @@ public class UserThread extends Thread {
 					PacketIO.sendPacket(this.writer, new Packet(PacketType.LOGIN, "server", 0, 1, (JSONObject) JSON.toJSON(user)));
 					PacketIO.sendPacket(this.writer, PacketUtils.createServerUsersListPacket(this.server));
 					this.server.broadcastPacket(PacketUtils.createOnlineUsersListPacket(this.server));
+					List<Integer> list = new ArrayList<>(user.getChatRooms());
+					list.sort((a, b) -> {
+						ChatRoomHistory historyA = this.server.getChatRoomManager().getChatRoomHistory(a);
+						ChatRoomHistory historyB = this.server.getChatRoomManager().getChatRoomHistory(b);
+						long valueA = historyA.getInformationList().isEmpty() ? 0 : historyA.getInformationList().get(historyA.getInformationList().size() - 1).getTimestamp();
+						long valueB = historyB.getInformationList().isEmpty() ? 0 : historyB.getInformationList().get(historyB.getInformationList().size() - 1).getTimestamp();
+						return Long.compare(valueA, valueB);
+					});
+					for (int id : list) {
+						ChatRoom room = this.server.getChatRoomManager().getChatRoom(id);
+						if (room == null) {
+							continue;
+						}
+						ChatRoomHistory history = this.server.getChatRoomManager()
+							.getChatRoomHistory(id);
+						
+						JSONObject object = new JSONObject();
+						object.put("room", room);
+						object.put("history", history);
+						Packet historyPacket = new Packet(PacketType.CHAT_ROOM, "server", 0, 2,
+							object);
+						PacketIO.sendPacket(this.writer, historyPacket);
+					}
+					
 					this.server.info("User " + user.getUserName() + " logged in");
 					this.startReceive();
 				}
@@ -140,6 +183,7 @@ public class UserThread extends Thread {
 							}
 							thread.sendPacket(send);
 						}
+						this.server.getChatRoomManager().getChatRoomHistory(chatRoom.getRoomID()).append(ci);
 					}
 					if (packet.getType() == PacketType.CHAT_ROOM) {
 						this.server.info("Receive chat room packet from " + this.user.getUserName());
@@ -153,7 +197,7 @@ public class UserThread extends Thread {
 							if (chatRoom == null) {
 								JSONObject object = new JSONObject();
 								object.put("msg", "创建失败");
-								Packet send = new Packet(PacketType.CHAT_ROOM, "server", 0, 0, new JSONObject());
+								Packet send = new Packet(PacketType.CHAT_ROOM, "server", 0, 0, object);
 								this.sendPacket(send);
 								continue;
 							}
@@ -162,6 +206,9 @@ public class UserThread extends Thread {
 							object.put("history", JSON.toJSON(new ChatRoomHistory(new ArrayList<>())));
 							Packet send = new Packet(PacketType.CHAT_ROOM, "server", 0, 1, object);
 							for (String user : chatRoom.getUsers()) {
+								User rawUser = this.server.getUserManager().getUser(user);
+								rawUser.addChatRoom(chatRoom.getRoomID());
+								this.server.getUserManager().saveUser(rawUser);
 								UserThread u = this.server.getUserManager().getOnlineUserThread(user);
 								if (u != null) {
 									u.sendPacket(send);
@@ -171,7 +218,7 @@ public class UserThread extends Thread {
 					}
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			if (this.server.debug()) {
 				e.printStackTrace();
 			}
