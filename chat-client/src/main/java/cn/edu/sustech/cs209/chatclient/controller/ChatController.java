@@ -110,7 +110,13 @@ public class ChatController {
 					this.pane.appendMessage(id, information);
 				});
 			}
-			
+			if (packet.getSubCode() == 1) {
+				int id = packet.getContent().getInteger("room");
+				ChatInformation information = (ChatInformation) JSON.parseObject(packet.getContent().get("ci").toString(), ChatInformation.class);
+				Platform.runLater(() -> {
+					this.pane.appendMessage(id, information);
+				});
+			}
 		}
 	}
 	

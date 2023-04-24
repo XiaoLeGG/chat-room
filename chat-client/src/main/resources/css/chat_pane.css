@@ -166,3 +166,12 @@
 .chat-room-list-cell:selected {
     -fx-background-color: #D0D0D0;
 }
+
+.file-button {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+
+.file-button:hover {
+    -fx-background-color: #D2D2D2;
+}

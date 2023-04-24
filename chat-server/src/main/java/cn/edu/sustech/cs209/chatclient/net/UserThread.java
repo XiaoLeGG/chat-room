@@ -170,20 +170,32 @@ public class UserThread extends Thread {
 				if (packet != null) {
 					if (packet.getType() == PacketType.MESSAGE) {
 						this.server.info("Receive message packet from " + this.user.getUserName());
-						ChatInformation ci = (ChatInformation) JSON.parseObject(packet.getContent().getJSONObject("ci").toJSONString(), ChatInformation.class);
-						ChatRoom chatRoom = this.server.getChatRoomManager().getChatRoom(packet.getContent().getInteger("room"));
-						if (chatRoom == null) {
-							continue;
-						}
-						Packet send = new Packet(PacketType.MESSAGE, "server", 0, 0, packet.getContent());
-						for (String user : chatRoom.getUsers()) {
-							UserThread thread = this.server.getUserManager().getOnlineUserThread(user);
-							if (thread == null) {
+						if (packet.getSubCode() == 0) {
+							ChatInformation ci = (ChatInformation) JSON.parseObject(
+								packet.getContent().getJSONObject("ci").toJSONString(),
+								ChatInformation.class);
+							ChatRoom chatRoom = this.server.getChatRoomManager()
+								.getChatRoom(packet.getContent().getInteger("room"));
+							if (chatRoom == null) {
 								continue;
 							}
-							thread.sendPacket(send);
+							
+							Packet send = new Packet(PacketType.MESSAGE, "server", 0, 0,
+								packet.getContent());
+							for (String user : chatRoom.getUsers()) {
+								UserThread thread = this.server.getUserManager()
+									.getOnlineUserThread(user);
+								if (thread == null) {
+									continue;
+								}
+								thread.sendPacket(send);
+							}
+							this.server.getChatRoomManager()
+								.getChatRoomHistory(chatRoom.getRoomID()).append(ci);
 						}
-						this.server.getChatRoomManager().getChatRoomHistory(chatRoom.getRoomID()).append(ci);
+						if (packet.getSubCode() == 1) {
+							this.server.newFileAuth(packet.getContent().getLong("auth"), packet.getContent());
+						}
 					}
 					if (packet.getType() == PacketType.CHAT_ROOM) {
 						this.server.info("Receive chat room packet from " + this.user.getUserName());

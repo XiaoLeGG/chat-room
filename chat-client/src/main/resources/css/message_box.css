@@ -32,3 +32,15 @@
     -fx-pref-width: 680;
     -fx-min-width: 680;
 }
+
+.file-field {
+    -fx-background-color: #FFB347;
+    -fx-background-radius: 5;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-font-size: 16px;
+}
+
+.file-field:hover {
+    -fx-background-color: #FFA33A;
+}
