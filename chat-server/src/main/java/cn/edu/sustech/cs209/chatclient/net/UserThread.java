@@ -226,14 +226,15 @@ public class UserThread extends Thread {
               JSONObject object = new JSONObject();
               object.put("room", JSON.toJSON(chatRoom));
               object.put("history", JSON.toJSON(new ChatRoomHistory(new ArrayList<>())));
-              Packet send = new Packet(PacketType.CHAT_ROOM, "server", 0, 1, object);
+              Packet send1 = new Packet(PacketType.CHAT_ROOM, "server", 0, 1, object);
+              Packet send2 = new Packet(PacketType.CHAT_ROOM, "server", 0, 2, object);
               for (String user : chatRoom.getUsers()) {
                 User rawUser = this.server.getUserManager().getUser(user);
                 rawUser.addChatRoom(chatRoom.getRoomID());
                 this.server.getUserManager().saveUser(rawUser);
                 UserThread u = this.server.getUserManager().getOnlineUserThread(user);
                 if (u != null) {
-                  u.sendPacket(send);
+                  u.sendPacket((user.equals(packet.getSender()) ? send1 : send2));
                 }
               }
             }
