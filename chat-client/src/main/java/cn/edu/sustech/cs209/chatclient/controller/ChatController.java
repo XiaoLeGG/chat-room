@@ -74,6 +74,7 @@ public class ChatController {
         array.toArray(users);
         this.onlineUsers = new ArrayList<>();
         onlineUsers.addAll(Arrays.asList(users));
+        this.pane.refreshUserList();
       }
       if (packet.getSubCode() == 2) {
         this.shutdown("用户在其它地方登录");

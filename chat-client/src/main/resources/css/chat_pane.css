@@ -175,3 +175,11 @@
 .file-button:hover {
     -fx-background-color: #D2D2D2;
 }
+
+.new-message-hint {
+    -fx-font-size: 16px;
+    -fx-text-fill: WHITE;
+    -fx-font-weight: BOLD;
+    -fx-background-color: #D02727;
+    -fx-background-radius: 5;
+}

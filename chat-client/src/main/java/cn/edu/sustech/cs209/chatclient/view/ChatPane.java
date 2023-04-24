@@ -55,6 +55,7 @@ public class ChatPane {
   private HBox mainBox;
   private HashMap<Integer, ChatSplitPane> chatBlockMap;
   private ListView<ChatRoom> chatRoomListView;
+  private HashMap<Integer, Boolean> newMessageHint;
 
   public void showError(TextFlow flow) {
     ViewUtils.showError(this.pane, flow);
@@ -82,12 +83,16 @@ public class ChatPane {
     this.chatRoomListView.getItems().add(0, roomPane.getRoom());
     if (id == roomId) {
       this.chatRoomListView.getSelectionModel().select(0);
+    } else {
+      this.newMessageHint.put(roomId, true);
+      this.chatRoomListView.refresh();
     }
   }
 
   public ChatPane(ChatController chatController) {
     this.chatController = chatController;
     this.chatBlockMap = new HashMap<>();
+    this.newMessageHint = new HashMap<>();
   }
 
   public void show() {
@@ -371,13 +376,26 @@ public class ChatPane {
                   label.setText("群聊：" + room.getName());
                 }
                 label.getStyleClass().add("chat-room-list-view-label");
+                if (newMessageHint.get(room.getRoomID()) != null
+                    && newMessageHint.get(room.getRoomID())) {
+                  Label newMessage = new Label("新消息");
+                  newMessage.setPadding(new Insets(0, 10, 0, 10));
+                  newMessage.getStyleClass().add("new-message-hint");
+                  hbox.getChildren().add(newMessage);
+                }
                 hbox.setAlignment(Pos.CENTER_LEFT);
                 hbox.setMaxHeight(35);
                 hbox.setMinHeight(35);
+
                 super.selectedProperty()
                     .addListener(
                         (observable, oldValue, newValue) -> {
                           if (newValue) {
+                            if (newMessageHint.get(room.getRoomID()) != null
+                                && newMessageHint.get(room.getRoomID())) {
+                              newMessageHint.put(room.getRoomID(), false);
+                              hbox.getChildren().remove(hbox.getChildren().size() - 1);
+                            }
                             mainBox.getChildren().remove(1);
                             mainBox.getChildren().add(chatBlockMap.get(room.getRoomID()));
                           }
@@ -415,5 +433,9 @@ public class ChatPane {
                 Platform.runLater(() -> newChatButton.setDisable(false));
               }
             });
+  }
+
+  public void refreshUserList() {
+    this.chatRoomListView.refresh();
   }
 }
