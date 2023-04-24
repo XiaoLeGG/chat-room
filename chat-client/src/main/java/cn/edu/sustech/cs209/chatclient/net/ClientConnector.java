@@ -17,77 +17,78 @@ import java.net.Socket;
 
 public class ClientConnector {
 
-	private String userName;
-	private String password;
-	private Socket socket;
-	private BufferedReader reader;
-	private BufferedWriter writer;
-	
-	
-	public ClientConnector(String username, String password) {
-		this.userName = username;
-		this.password = password;
-	}
-	
-	public Packet login() {
-		try {
-			this.socket = new Socket();
-			this.socket.setKeepAlive(true);
-			this.socket.connect(new InetSocketAddress(NetConfig.DEFAULT_SERVER_HOST, NetConfig.SERVER_PORT), 1000 * 10);
-			if (!socket.isConnected()) {
-				return null;
-			}
-			this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-			this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			JSONObject content = new JSONObject();
-			content.put("username", this.userName);
-			content.put("password", this.password);
-			Packet packet = new Packet(PacketType.LOGIN, this.userName, 1, 0, content);
-			PacketIO.sendPacket(this.writer, packet);
-			Packet receive = PacketIO.receivePacket(this.reader);
-			return receive;
-		} catch (Exception e) {
-			if (MainApplication.debug()) {
-				e.printStackTrace();
-			}
-			return null;
-		}
-	}
-	
-	public Packet accpetPacket() throws IOException {
-		Packet packet = PacketIO.receivePacket(this.reader);
-		return packet;
-	}
-	
-	public void close() throws IOException {
-		this.socket.close();
-	}
-	
-	public Packet register() {
-		try {
-			Socket socket = new Socket();
-			socket.connect(new InetSocketAddress(NetConfig.DEFAULT_SERVER_HOST, NetConfig.SERVER_PORT), 1000 * 10);
-			if (!socket.isConnected()) {
-				return null;
-			}
-			this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-			this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			JSONObject content = new JSONObject();
-			content.put("username", this.userName);
-			content.put("password", this.password);
-			Packet packet = new Packet(PacketType.REGISTER, this.userName, 1, 0, content);
-			PacketIO.sendPacket(this.writer, packet);
-			Packet receive = PacketIO.receivePacket(this.reader);
-			return receive;
-		} catch (Exception e) {
-			if (MainApplication.debug()) {
-				e.printStackTrace();
-			}
-			return null;
-		}
-	}
-	
-	public void sendPacket(Packet packet) throws IOException {
-		PacketIO.sendPacket(this.writer, packet);
-	}
+  private String userName;
+  private String password;
+  private Socket socket;
+  private BufferedReader reader;
+  private BufferedWriter writer;
+
+  public ClientConnector(String username, String password) {
+    this.userName = username;
+    this.password = password;
+  }
+
+  public Packet login() {
+    try {
+      this.socket = new Socket();
+      this.socket.setKeepAlive(true);
+      this.socket.connect(
+          new InetSocketAddress(NetConfig.DEFAULT_SERVER_HOST, NetConfig.SERVER_PORT), 1000 * 10);
+      if (!socket.isConnected()) {
+        return null;
+      }
+      this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+      this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+      JSONObject content = new JSONObject();
+      content.put("username", this.userName);
+      content.put("password", this.password);
+      Packet packet = new Packet(PacketType.LOGIN, this.userName, 1, 0, content);
+      PacketIO.sendPacket(this.writer, packet);
+      Packet receive = PacketIO.receivePacket(this.reader);
+      return receive;
+    } catch (Exception e) {
+      if (MainApplication.debug()) {
+        e.printStackTrace();
+      }
+      return null;
+    }
+  }
+
+  public Packet accpetPacket() throws IOException {
+    Packet packet = PacketIO.receivePacket(this.reader);
+    return packet;
+  }
+
+  public void close() throws IOException {
+    this.socket.close();
+  }
+
+  public Packet register() {
+    try {
+      Socket socket = new Socket();
+      socket.connect(
+          new InetSocketAddress(NetConfig.DEFAULT_SERVER_HOST, NetConfig.SERVER_PORT), 1000 * 10);
+      if (!socket.isConnected()) {
+        return null;
+      }
+      this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+      this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+      JSONObject content = new JSONObject();
+      content.put("username", this.userName);
+      content.put("password", this.password);
+      Packet packet = new Packet(PacketType.REGISTER, this.userName, 1, 0, content);
+      PacketIO.sendPacket(this.writer, packet);
+      Packet receive = PacketIO.receivePacket(this.reader);
+      return receive;
+    } catch (Exception e) {
+      if (MainApplication.debug()) {
+        e.printStackTrace();
+      }
+      return null;
+    }
+  }
+
+  public void sendPacket(Packet packet) throws IOException {
+    PacketIO.sendPacket(this.writer, packet);
+  }
 }

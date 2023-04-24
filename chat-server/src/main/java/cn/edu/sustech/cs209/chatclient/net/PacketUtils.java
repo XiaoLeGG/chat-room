@@ -8,19 +8,17 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 public class PacketUtils {
-	
-	protected static Packet createServerUsersListPacket(ChatServer server) {
-		JSONArray array = (JSONArray) JSON.toJSON(server.getUserManager().getUserPIs());
-		JSONObject userContent = new JSONObject();
-		userContent.put("users", array);
-		return new Packet(PacketType.USER, "server", 0, 0, userContent);
-	}
-	
-	protected static Packet createOnlineUsersListPacket(ChatServer server) {
-		JSONObject content = new JSONObject();
-		content.put("online", (JSONArray) JSON.toJSON(server.getUserManager().getOnlineUserPIs()));
-		return new Packet(PacketType.USER, "server", 0, 1, content);
-	}
-	
-	
+
+  protected static Packet createServerUsersListPacket(ChatServer server) {
+    JSONArray array = (JSONArray) JSON.toJSON(server.getUserManager().getUserPIs());
+    JSONObject userContent = new JSONObject();
+    userContent.put("users", array);
+    return new Packet(PacketType.USER, "server", 0, 0, userContent);
+  }
+
+  protected static Packet createOnlineUsersListPacket(ChatServer server) {
+    JSONObject content = new JSONObject();
+    content.put("online", (JSONArray) JSON.toJSON(server.getUserManager().getOnlineUserPIs()));
+    return new Packet(PacketType.USER, "server", 0, 1, content);
+  }
 }
