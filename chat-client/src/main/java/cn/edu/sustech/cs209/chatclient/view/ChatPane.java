@@ -2,7 +2,6 @@ package cn.edu.sustech.cs209.chatclient.view;
 
 import cn.edu.sustech.cs209.chatclient.MainApplication;
 import cn.edu.sustech.cs209.chatclient.controller.ChatController;
-
 import cn.edu.sustech.cs209.chatclient.model.ChatInformation;
 import cn.edu.sustech.cs209.chatclient.model.ChatRoom;
 import cn.edu.sustech.cs209.chatclient.model.ChatRoom.RoomType;
@@ -69,16 +68,16 @@ public class ChatPane {
 		ViewUtils.showWarning(this.pane, flow);
 	}
 	
-	public void appendMessage(int roomID, ChatInformation info) {
-		if (this.chatBlockMap.get(roomID) == null) {
+	public void appendMessage(int roomId, ChatInformation info) {
+		if (this.chatBlockMap.get(roomId) == null) {
 			return;
 		}
-		ChatSplitPane roomPane = this.chatBlockMap.get(roomID);
-		int id = this.chatRoomListView.getSelectionModel().getSelectedItem().getRoomID();
+		ChatSplitPane roomPane = this.chatBlockMap.get(roomId);
 		this.chatRoomListView.getItems().remove(roomPane.getRoom());
+		int id = this.chatRoomListView.getSelectionModel().getSelectedItem().getRoomID();
 		roomPane.append(info);
 		this.chatRoomListView.getItems().add(0, roomPane.getRoom());
-		if (id == roomID) {
+		if (id == roomId) {
 			this.chatRoomListView.getSelectionModel().select(0);
 		}
 	}
@@ -94,14 +93,6 @@ public class ChatPane {
 	
 	public void hide() {
 		this.stage.hide();
-	}
-	
-	public void switchChatContentPane(int roomID) {
-		if (this.chatBlockMap.get(roomID) == null) {
-			return;
-		}
-		this.mainBox.getChildren().remove(1);
-		this.mainBox.getChildren().add(this.chatBlockMap.get(roomID));
 	}
 	
 	public void appendChatRoom(ChatRoom room, ChatRoomHistory history) {
@@ -145,7 +136,6 @@ public class ChatPane {
 		chatListBlock.setDividerPositions(0.1);
 		chatListBlock.getStyleClass().add("chat-list-block");
 		JFXDepthManager.setDepth(chatListBlock, 3);
-		HBox buttonBox = new HBox();
 		JFXButton newChatButton = new JFXButton("新建会话");
 		newChatButton.getStyleClass().add("new-chat-button");
 		newChatButton.setOnAction(e -> {
@@ -177,15 +167,14 @@ public class ChatPane {
 			
 			List<String> users = new ArrayList<>();
 			
-			ScrollPane scrollPane = new ScrollPane();
 			JFXButton createButton = new JFXButton("创建");
 			
 			ListView<UserPI> listView = new ListView<>();
 			listView.getStyleClass().add("user-list-view");
-			listView.setCellFactory(new Callback<ListView<UserPI>, ListCell<UserPI>>() {
+			listView.setCellFactory(new Callback<>() {
 				@Override
 				public ListCell<UserPI> call(ListView<UserPI> param) {
-					return new ListCell<UserPI>() {
+					return new ListCell<>() {
 						@Override
 						protected void updateItem(UserPI item, boolean empty) {
 							super.updateItem(item, empty);
@@ -198,7 +187,8 @@ public class ChatPane {
 							Text label = new Text(item.getName());
 							label.setStyle("-fx-font-weight: bold");
 							Circle circle = new Circle(5);
-							FillTransition fillTransition = new FillTransition(Duration.seconds(0.5), circle);
+							FillTransition fillTransition = new FillTransition(
+								Duration.seconds(0.5), circle);
 							fillTransition.setCycleCount(Animation.INDEFINITE);
 							fillTransition.setAutoReverse(true);
 							if (chatController.isOnline(item.getName())) {
@@ -258,6 +248,7 @@ public class ChatPane {
 			});
 			listView.getItems().addAll(chatController.getUsers());
 			listView.refresh();
+			ScrollPane scrollPane = new ScrollPane();
 			scrollPane.setContent(listView);
 			scrollPane.getStyleClass().add("user-list-view-scroll-pane");
 			scrollPane.getStylesheets().add(getClass().getResource("/css/scroll_bar.css").toExternalForm());
@@ -375,6 +366,7 @@ public class ChatPane {
 			}
 		});
 		
+		HBox buttonBox = new HBox();
 		buttonBox.getChildren().add(newChatButton);
 		buttonBox.setPadding(new Insets(10, 10, 10, 10));
 		buttonBox.maxHeightProperty().bind(chatListBlock.widthProperty().multiply(0.1));

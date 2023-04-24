@@ -10,7 +10,6 @@ import cn.edu.sustech.cs209.chatclient.packet.PacketIO;
 import cn.edu.sustech.cs209.chatclient.packet.PacketType;
 import com.alibaba.fastjson.JSONObject;
 import java.io.BufferedReader;
-import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -66,95 +65,92 @@ public class ChatServer {
 	
 	public void startServer() throws IOException {
 		stop = false;
-		Thread fileThread = new Thread() {
-			@Override
-			public void run() {
-				File dir = new File("files");
-				if (!dir.exists()) {
-					dir.mkdir();
-				}
-				ExecutorService filePool = Executors.newCachedThreadPool();
-				while (!stop) {
-					try {
-						Socket client = fileSocket.accept();
-						filePool.execute(() -> {
-							try {
-								BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-								Packet packet = PacketIO.receivePacket(reader);
-								if (packet.getSubCode() == 0) {
-									JSONObject object = packet.getContent();
-									long auth = object.getLong("auth");
-									JSONObject authObject = fileAuth.get(auth);
-									if (authObject == null) {
-										return;
-									}
-									if (!packet.getSender().equals(authObject.getString("user"))) {
-										return;
-									}
-									DataInputStream input = new DataInputStream(client.getInputStream());
-									String uuid = UUID.randomUUID().toString();
-									File file = new File(dir, uuid);
-									if (!file.exists()) {
-										file.createNewFile();
-									}
-									FileOutputStream output = new FileOutputStream(file);
-									byte[] bytes = new byte[1024];
-									while (input.read(bytes) != -1) {
-										output.write(bytes);
-									}
-									output.flush();;
-									output.close();;
-									fileAuth.remove(auth);
-									ChatRoom room = roomManager.getChatRoom(authObject.getInteger("room"));
-									JSONObject info = new JSONObject();
-									info.put("file", authObject.getString("name"));
-									info.put("remote-file", uuid);
-									info.put("length", authObject.getLong("length"));
-									ChatInformation ci = new ChatInformation(ChatInformationType.FILE, packet.getSender(), info, new Date().getTime());
-									JSONObject send = new JSONObject();
-									send.put("ci", ci);
-									send.put("room", room.getRoomID());
-									ChatServer.this.getChatRoomManager().getChatRoomHistory(room.getRoomID()).append(ci);
-									ChatServer.this.getChatRoomManager().saveChatRoom(room.getRoomID());
-									Packet sendPacket = new Packet(PacketType.MESSAGE, "server", 0, 1, send);
-									for (String user : room.getUsers()) {
-										UserThread userThread = manager.getOnlineUserThread(user);
-										if (userThread != null) {
-											userThread.sendPacket(sendPacket);
-										}
-									}
+		Thread fileThread = new Thread(() -> {
+			File dir = new File("files");
+			if (!dir.exists()) {
+				dir.mkdir();
+			}
+			ExecutorService filePool = Executors.newCachedThreadPool();
+			while (!stop) {
+				try {
+					Socket client = fileSocket.accept();
+					filePool.execute(() -> {
+						try {
+							BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
+							Packet packet = PacketIO.receivePacket(reader);
+							if (packet.getSubCode() == 0) {
+								JSONObject object = packet.getContent();
+								long auth = object.getLong("auth");
+								JSONObject authObject = fileAuth.get(auth);
+								if (authObject == null) {
 									return;
 								}
-								if (packet.getSubCode() == 1) {
-									String name = packet.getContent().getString("name");
-									File file = new File(dir, name);
-									if (!file.exists()) {
-										client.getOutputStream().close();
-									}
-									DataInputStream input = new DataInputStream(new FileInputStream(file));
-									DataOutputStream stream = new DataOutputStream(client.getOutputStream());
-									byte[] bytes = new byte[1024];
-									while (input.read(bytes) != -1) {
-										stream.write(bytes);
-									}
-									stream.flush();
-									stream.close();
+								if (!packet.getSender().equals(authObject.getString("user"))) {
+									return;
 								}
-							} catch (IOException e) {
-								if (ChatServer.this.debug()) {
-									e.printStackTrace();
+								DataInputStream input = new DataInputStream(client.getInputStream());
+								String uuid = UUID.randomUUID().toString();
+								File file = new File(dir, uuid);
+								if (!file.exists()) {
+									file.createNewFile();
+								}
+								FileOutputStream output = new FileOutputStream(file);
+								byte[] bytes = new byte[1024];
+								while (input.read(bytes) != -1) {
+									output.write(bytes);
+								}
+								output.flush();
+								output.close();
+								fileAuth.remove(auth);
+								final ChatRoom room = roomManager.getChatRoom(authObject.getInteger("room"));
+								JSONObject info = new JSONObject();
+								info.put("file", authObject.getString("name"));
+								info.put("remote-file", uuid);
+								info.put("length", authObject.getLong("length"));
+								ChatInformation ci = new ChatInformation(ChatInformationType.FILE, packet.getSender(), info, new Date().getTime());
+								JSONObject send = new JSONObject();
+								send.put("ci", ci);
+								send.put("room", room.getRoomID());
+								ChatServer.this.getChatRoomManager().getChatRoomHistory(room.getRoomID()).append(ci);
+								ChatServer.this.getChatRoomManager().saveChatRoom(room.getRoomID());
+								Packet sendPacket = new Packet(PacketType.MESSAGE, "server", 0, 1, send);
+								for (String user : room.getUsers()) {
+									UserThread userThread = manager.getOnlineUserThread(user);
+									if (userThread != null) {
+										userThread.sendPacket(sendPacket);
+									}
 								}
 								return;
 							}
-						});
-					} catch (Exception e) {
-						if (ChatServer.this.debug()) {
-							e.printStackTrace();
+							if (packet.getSubCode() == 1) {
+								String name = packet.getContent().getString("name");
+								File file = new File(dir, name);
+								if (!file.exists()) {
+									client.getOutputStream().close();
+								}
+								DataInputStream input = new DataInputStream(new FileInputStream(file));
+								DataOutputStream stream = new DataOutputStream(client.getOutputStream());
+								byte[] bytes = new byte[1024];
+								while (input.read(bytes) != -1) {
+									stream.write(bytes);
+								}
+								stream.flush();
+								stream.close();
+							}
+						} catch (IOException e) {
+							if (ChatServer.this.debug()) {
+								e.printStackTrace();
+							}
+							return;
 						}
+					});
+				} catch (Exception e) {
+					if (ChatServer.this.debug()) {
+						e.printStackTrace();
 					}
 				}
 			}
-		};
+		});
 		fileThread.setDaemon(true);
 		fileThread.start();
 		while (!stop) {
@@ -172,7 +168,7 @@ public class ChatServer {
 	}
 	
 	public void broadcastPacket(Packet packet) {
-		this.manager.getOnlineUserThreads().stream().forEach((thread) -> {
+		this.manager.getOnlineUserThreads().forEach((thread) -> {
 			try {
 				thread.sendPacket(packet);
 			} catch (IOException e) {
@@ -186,7 +182,7 @@ public class ChatServer {
 	
 	public void log(String msg) {
 		String logMsg = "[" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "]" + msg;
-		log.append(logMsg + "\n");
+		log.append(logMsg).append("\n");
 		
 		System.out.println(logMsg);
 	}

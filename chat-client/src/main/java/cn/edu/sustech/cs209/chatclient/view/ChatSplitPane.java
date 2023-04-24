@@ -15,8 +15,6 @@ import cn.edu.sustech.cs209.chatclient.packet.PacketType;
 import com.alibaba.fastjson.JSONObject;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.effects.JFXDepthManager;
-import com.jfoenix.svg.SVGGlyph;
-import com.jfoenix.svg.SVGGlyphLoader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -26,10 +24,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Date;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -44,7 +40,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.SVGPath;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
@@ -73,7 +68,7 @@ public class ChatSplitPane extends SplitPane {
 		this.getStyleClass().add("chat-block");
 		JFXDepthManager.setDepth(this, 3);
 		
-		HBox chatHeader = new HBox();
+		
 		String title = this.room.getName();
 		if (this.room.getType() == RoomType.PRIVATE) {
 			title = this.room.getUsers()[0].equals(this.currentUser.getName()) ? this.room.getUsers()[1] : this.room.getUsers()[0];
@@ -91,6 +86,7 @@ public class ChatSplitPane extends SplitPane {
 			tip.setShowDelay(Duration.millis(10));
 			titleLabel.setTooltip(tip);
 		}
+		HBox chatHeader = new HBox();
 		chatHeader.getChildren().add(titleLabel);
 		chatHeader.setPadding(new Insets(18, 10, 10, 20));
 		
@@ -111,7 +107,7 @@ public class ChatSplitPane extends SplitPane {
 		this.chatContent.setVvalue(1);
 		this.chatContent.setContent(chatComponentBox);
 		
-		VBox chatTypeBox = new VBox();
+		final VBox chatTypeBox = new VBox();
 		TextArea textArea = new TextArea();
 		textArea.setWrapText(true);
 		textArea.getStyleClass().add("type-area");
@@ -153,33 +149,31 @@ public class ChatSplitPane extends SplitPane {
 			Packet packet = new Packet(PacketType.MESSAGE, this.currentUser.getName(), 1, 1, object);
 			try {
 				this.controller.sendPacket(packet);
-				Thread uploadThread = new Thread() {
-					@Override
-					public void run() {
-						Socket socket = new Socket();
-						try {
-							socket.connect(new InetSocketAddress(NetConfig.DEFAULT_SERVER_HOST, NetConfig.SERVER_DOWNLOAD_PORT), 10000);
-							BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-							JSONObject object = new JSONObject();
-							object.put("auth", auth);
-							Packet packet = new Packet(PacketType.FILE, ChatSplitPane.this.currentUser.getName(), 1, 0, object);
-							PacketIO.sendPacket(writer, packet);
-							writer.flush();
-							DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
-							DataInputStream input = new DataInputStream(new FileInputStream(choose));
-							byte[] bytes = new byte[1024];
-							while (input.read(bytes) != -1) {
-								outputStream.write(bytes);
-							}
-							outputStream.flush();
-							socket.close();
-						} catch (IOException ex) {
-							if (MainApplication.debug()) {
-								ex.printStackTrace();
-							}
+				Thread uploadThread = new Thread(() -> {
+					Socket socket = new Socket();
+					try {
+						socket.connect(new InetSocketAddress(NetConfig.DEFAULT_SERVER_HOST, NetConfig.SERVER_DOWNLOAD_PORT), 10000);
+						BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+						JSONObject object1 = new JSONObject();
+						object1.put("auth", auth);
+						Packet packet1 = new Packet(PacketType.FILE, ChatSplitPane.this.currentUser.getName(), 1, 0,
+							object1);
+						PacketIO.sendPacket(writer, packet1);
+						writer.flush();
+						DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+						DataInputStream input = new DataInputStream(new FileInputStream(choose));
+						byte[] bytes = new byte[1024];
+						while (input.read(bytes) != -1) {
+							outputStream.write(bytes);
+						}
+						outputStream.flush();
+						socket.close();
+					} catch (IOException ex) {
+						if (MainApplication.debug()) {
+							ex.printStackTrace();
 						}
 					}
-				};
+				});
 				uploadThread.setDaemon(true);
 				uploadThread.start();
 			} catch (IOException ex) {

@@ -1,15 +1,14 @@
 package cn.edu.sustech.cs209.chatclient.controller;
 
 import cn.edu.sustech.cs209.chatclient.model.ChatInformation;
-import cn.edu.sustech.cs209.chatclient.model.ChatInformation.ChatInformationType;
 import cn.edu.sustech.cs209.chatclient.model.ChatRoom;
 import cn.edu.sustech.cs209.chatclient.model.ChatRoomHistory;
 import cn.edu.sustech.cs209.chatclient.model.User;
 import cn.edu.sustech.cs209.chatclient.model.UserPI;
 import cn.edu.sustech.cs209.chatclient.net.ClientConnector;
+import cn.edu.sustech.cs209.chatclient.packet.Packet;
 import cn.edu.sustech.cs209.chatclient.packet.PacketType;
 import cn.edu.sustech.cs209.chatclient.view.ChatPane;
-import cn.edu.sustech.cs209.chatclient.packet.Packet;
 import cn.edu.sustech.cs209.chatclient.view.ViewUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -22,7 +21,6 @@ import java.util.List;
 import javafx.application.Platform;
 
 public class ChatController {
-	
 	private LoginController loginController;
 	private User user;
 	private List<UserPI> userPIs;
@@ -30,7 +28,9 @@ public class ChatController {
 	private ChatPane pane;
 	private ClientConnector connector;
 	private ClientThread thread;
-	public ChatController(LoginController loginController, ClientConnector connector, User user) {
+	
+	public ChatController(LoginController loginController,
+		ClientConnector connector, User user) {
 		this.loginController = loginController;
 		this.connector = connector;
 		this.user = user;
@@ -83,12 +83,15 @@ public class ChatController {
 		if (packet.getType() == PacketType.CHAT_ROOM) {
 			if (packet.getSubCode() == 0) {
 				Platform.runLater(() -> {
-					this.pane.showError(ViewUtils.generateTextFlow(packet.getContent().getString("msg")));
+					this.pane.showError(
+						ViewUtils.generateTextFlow(packet.getContent().getString("msg")));
 				});
 			}
 			if (packet.getSubCode() == 1) {
-				ChatRoom cr = (ChatRoom) JSON.parseObject(packet.getContent().get("room").toString(), ChatRoom.class);
-				ChatRoomHistory history = (ChatRoomHistory) JSON.parseObject(packet.getContent().get("history").toString(), ChatRoomHistory.class);
+				ChatRoom cr = JSON.parseObject(
+					packet.getContent().get("room").toString(), ChatRoom.class);
+				ChatRoomHistory history = JSON.parseObject(
+					packet.getContent().get("history").toString(), ChatRoomHistory.class);
 				Platform.runLater(() -> {
 					this.pane.appendChatRoom(cr, history);
 					this.pane.showInfo(ViewUtils.generateTextFlow("创建会话成功"));
@@ -97,22 +100,27 @@ public class ChatController {
 				user.addChatRoom(cr.getRoomID());
 			}
 			if (packet.getSubCode() == 2) {
-				ChatRoom cr = (ChatRoom) JSON.parseObject(packet.getContent().get("room").toString(), ChatRoom.class);
-				ChatRoomHistory history = (ChatRoomHistory) JSON.parseObject(packet.getContent().get("history").toString(), ChatRoomHistory.class);
+				ChatRoom cr = JSON.parseObject(
+					packet.getContent().get("room").toString(), ChatRoom.class);
+				ChatRoomHistory history = JSON.parseObject(
+					packet.getContent().get("history").toString(), ChatRoomHistory.class);
 				Platform.runLater(() -> this.pane.appendChatRoom(cr, history));
 			}
 		}
 		if (packet.getType() == PacketType.MESSAGE) {
 			if (packet.getSubCode() == 0) {
 				int id = packet.getContent().getInteger("room");
-				ChatInformation information = (ChatInformation) JSON.parseObject(packet.getContent().get("ci").toString(), ChatInformation.class);
+				ChatInformation information = JSON.parseObject(
+					packet.getContent().get("ci").toString(),
+					ChatInformation.class);
 				Platform.runLater(() -> {
 					this.pane.appendMessage(id, information);
 				});
 			}
 			if (packet.getSubCode() == 1) {
 				int id = packet.getContent().getInteger("room");
-				ChatInformation information = (ChatInformation) JSON.parseObject(packet.getContent().get("ci").toString(), ChatInformation.class);
+				ChatInformation information = JSON.parseObject(
+					packet.getContent().get("ci").toString(), ChatInformation.class);
 				Platform.runLater(() -> {
 					this.pane.appendMessage(id, information);
 				});

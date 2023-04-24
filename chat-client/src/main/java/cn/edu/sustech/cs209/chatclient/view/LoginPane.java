@@ -1,6 +1,7 @@
 package cn.edu.sustech.cs209.chatclient.view;
 
 import cn.edu.sustech.cs209.chatclient.controller.LoginController;
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.effects.JFXDepthManager;
@@ -13,7 +14,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
-import com.jfoenix.controls.JFXButton;
 
 public class LoginPane {
 	
@@ -22,7 +22,7 @@ public class LoginPane {
 	private Scene scene;
 	private Pane loginPane;
 	private Pane registerPane;
-	private LoginController controller;
+	private final LoginController controller;
 	
 	public void showError(TextFlow flow) {
 		ViewUtils.showError(this.stackPane, flow);

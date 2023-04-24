@@ -2,8 +2,8 @@ package cn.edu.sustech.cs209.chatclient.controller;
 
 import cn.edu.sustech.cs209.chatclient.model.User;
 import cn.edu.sustech.cs209.chatclient.net.ClientConnector;
-import cn.edu.sustech.cs209.chatclient.view.LoginPane;
 import cn.edu.sustech.cs209.chatclient.packet.Packet;
+import cn.edu.sustech.cs209.chatclient.view.LoginPane;
 import com.alibaba.fastjson.JSON;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
@@ -19,6 +19,10 @@ public class LoginController {
 	
 	public void showLoginPane(Stage stage) {
 		this.pane.init(stage);
+		this.pane.show();
+	}
+	
+	public void showLoginPane() {
 		this.pane.show();
 	}
 	
@@ -41,10 +45,6 @@ public class LoginController {
 				return "注册成功";
 			}
 		}
-	}
-	
-	public void showLoginPane() {
-		this.pane.show();
 	}
 	
 	public void hideLoginPane() {

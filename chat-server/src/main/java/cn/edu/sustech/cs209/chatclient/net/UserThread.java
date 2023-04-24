@@ -1,29 +1,23 @@
 package cn.edu.sustech.cs209.chatclient.net;
 
 import cn.edu.sustech.cs209.chatclient.model.ChatInformation;
-import cn.edu.sustech.cs209.chatclient.model.ChatInformation.ChatInformationType;
 import cn.edu.sustech.cs209.chatclient.model.ChatRoom;
 import cn.edu.sustech.cs209.chatclient.model.ChatRoom.RoomType;
 import cn.edu.sustech.cs209.chatclient.model.ChatRoomHistory;
 import cn.edu.sustech.cs209.chatclient.model.User;
-import cn.edu.sustech.cs209.chatclient.model.UserManager;
-import cn.edu.sustech.cs209.chatclient.packet.PacketIO;
 import cn.edu.sustech.cs209.chatclient.packet.Packet;
+import cn.edu.sustech.cs209.chatclient.packet.PacketIO;
 import cn.edu.sustech.cs209.chatclient.packet.PacketType;
-import cn.edu.sustech.cs209.chatclient.packet.PacketWrapper;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 public class UserThread extends Thread {
@@ -171,7 +165,7 @@ public class UserThread extends Thread {
 					if (packet.getType() == PacketType.MESSAGE) {
 						this.server.info("Receive message packet from " + this.user.getUserName());
 						if (packet.getSubCode() == 0) {
-							ChatInformation ci = (ChatInformation) JSON.parseObject(
+							ChatInformation ci = JSON.parseObject(
 								packet.getContent().getJSONObject("ci").toJSONString(),
 								ChatInformation.class);
 							ChatRoom chatRoom = this.server.getChatRoomManager()

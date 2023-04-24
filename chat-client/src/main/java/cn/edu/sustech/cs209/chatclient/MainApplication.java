@@ -2,16 +2,13 @@ package cn.edu.sustech.cs209.chatclient;
 
 import cn.edu.sustech.cs209.chatclient.controller.LoginController;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 
 public class MainApplication extends Application {
 	
 	@Override
-	public void start(Stage stage) throws IOException {
+	public void start(Stage stage) {
 		LoginController controller = new LoginController();
 		controller.initLogin();
 		controller.showLoginPane(stage);
