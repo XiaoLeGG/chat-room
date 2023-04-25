@@ -349,6 +349,7 @@ public class ChatPane {
         .add(getClass().getResource("/css/scroll_bar.css").toExternalForm());
     this.chatRoomListView = new ListView<>();
     this.chatRoomListView.getStyleClass().add("chat-room-list-view");
+    this.chatRoomListView.maxHeightProperty().bind(roomListScroll.heightProperty());
     this.chatRoomListView
         .getStylesheets()
         .add(getClass().getResource("/css/scroll_bar.css").toExternalForm());
@@ -425,8 +426,10 @@ public class ChatPane {
     HBox buttonBox = new HBox();
     buttonBox.getChildren().add(newChatButton);
     buttonBox.setPadding(new Insets(10, 10, 10, 10));
-    buttonBox.maxHeightProperty().bind(chatListBlock.widthProperty().multiply(0.1));
+    buttonBox.maxHeightProperty().bind(chatListBlock.heightProperty().multiply(0.1));
+    roomListScroll.maxHeightProperty().bind(chatListBlock.heightProperty().multiply(0.8));
     roomListScroll.setContent(this.chatRoomListView);
+    roomListScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
     roomListScroll.setFitToWidth(true);
     chatListBlock.getItems().addAll(buttonBox, roomListScroll);
 

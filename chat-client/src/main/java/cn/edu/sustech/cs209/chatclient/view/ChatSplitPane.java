@@ -27,6 +27,9 @@ import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -255,11 +258,19 @@ public class ChatSplitPane extends SplitPane {
     this.history.append(information);
     MessageBox box =
         new MessageBox(information, information.getSender().equals(this.currentUser.getName()));
-    boolean scroll = (this.chatContent.getVvalue() / this.chatContent.getVmax()) > 0.7;
+
+    boolean scroll = this.chatContent.getVvalue() > 0.8;
     this.chatComponentBox.getChildren().add(box);
-    if (scroll) {
-      this.chatContent.setVvalue(this.chatContent.getVmax());
-    }
+    final KeyFrame kf =
+        new KeyFrame(
+            Duration.millis(32),
+            e -> {
+              if (scroll) {
+                this.chatContent.setVvalue(1);
+              }
+            });
+    final Timeline timeline = new Timeline(kf);
+    Platform.runLater(timeline::play);
   }
 
   public ChatRoom getRoom() {
