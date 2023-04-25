@@ -136,7 +136,13 @@ public class ChatPane {
     JFXDepthManager.setDepth(profileBlock, 3);
     Label userNameLabel = new Label(this.chatController.getUser().getUserName());
     userNameLabel.getStyleClass().add("user-name-label");
-    profileBlock.getChildren().add(userNameLabel);
+    Label userNameTag = new Label("用户名:");
+    userNameTag.getStyleClass().add("user-name-tag");
+    HBox labelBox = new HBox();
+    labelBox.getChildren().addAll(userNameTag, userNameLabel);
+    labelBox.setAlignment(Pos.CENTER_LEFT);
+    labelBox.setSpacing(10);
+    profileBlock.getChildren().add(labelBox);
     profileBlock.setAlignment(Pos.CENTER_LEFT);
     profileBlock.setPadding(new Insets(0, 0, 0, 25));
 
@@ -225,6 +231,17 @@ public class ChatPane {
                               }
                               if (users.size() > 2) {
                                 name.setDisable(false);
+                                if (name.getText() == null || name.getText().isEmpty()) {
+                                  StringBuilder builder = new StringBuilder();
+                                  users.stream()
+                                      .sorted()
+                                      .limit(3)
+                                      .forEach(
+                                          e3 -> {
+                                            builder.append(e3).append(", ");
+                                          });
+                                  name.setText(builder.substring(0, builder.length() - 2));
+                                }
                               }
                             } else {
                               if (!users.contains(item.getName())) {

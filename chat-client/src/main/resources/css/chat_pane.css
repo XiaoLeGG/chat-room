@@ -75,8 +75,15 @@
     -fx-text-fill: #06AE57;
 }
 
+.user-name-tag {
+    -fx-background-color: transparent;
+    -fx-font-weight: BOLD;
+    -fx-text-fill: #06C179;
+    -fx-font-size: 20px;
+}
+
 .user-name-label {
-    -fx-font-size: 16px;
+    -fx-font-size: 20px;
 }
 
 .new-chat-button {
