@@ -85,8 +85,8 @@ public class ChatPane {
       this.chatRoomListView.getSelectionModel().select(0);
     } else {
       this.newMessageHint.put(roomId, true);
-      this.chatRoomListView.refresh();
     }
+    this.chatRoomListView.refresh();
   }
 
   public ChatPane(ChatController chatController) {
@@ -349,6 +349,7 @@ public class ChatPane {
         .add(getClass().getResource("/css/scroll_bar.css").toExternalForm());
     this.chatRoomListView = new ListView<>();
     this.chatRoomListView.getStyleClass().add("chat-room-list-view");
+    this.chatRoomListView.prefHeightProperty().bind(roomListScroll.heightProperty());
     this.chatRoomListView.maxHeightProperty().bind(roomListScroll.heightProperty());
     this.chatRoomListView
         .getStylesheets()
@@ -359,6 +360,7 @@ public class ChatPane {
               @Override
               protected void updateItem(ChatRoom room, boolean empty) {
                 super.updateItem(room, empty);
+                super.getStyleClass().clear();
                 if (empty || room == null || room.getType() == RoomType.EMPTY) {
                   super.getStyleClass().add("chat-room-list-cell-empty");
                   setGraphic(null);
@@ -427,6 +429,7 @@ public class ChatPane {
     buttonBox.getChildren().add(newChatButton);
     buttonBox.setPadding(new Insets(10, 10, 10, 10));
     buttonBox.maxHeightProperty().bind(chatListBlock.heightProperty().multiply(0.1));
+    roomListScroll.prefHeightProperty().bind(chatListBlock.heightProperty().multiply(0.8));
     roomListScroll.maxHeightProperty().bind(chatListBlock.heightProperty().multiply(0.8));
     roomListScroll.setContent(this.chatRoomListView);
     roomListScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
