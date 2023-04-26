@@ -201,6 +201,7 @@ public class UserThread extends Thread {
                 thread.sendPacket(send);
               }
               this.server.getChatRoomManager().getChatRoomHistory(chatRoom.getRoomID()).append(ci);
+              this.server.getChatRoomManager().saveChatRoom(chatRoom.getRoomID());
             }
             if (packet.getSubCode() == 1) {
               this.server.newFileAuth(packet.getContent().getLong("auth"), packet.getContent());
